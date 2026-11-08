@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>流放之路市集汉化</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="card">
+    <div class="brand">
+      <span class="sigil">流</span>
+      <div>
+        <h1>市集汉化</h1>
+        <p class="sub">PoE 1 / PoE 2 Trade</p>
+      </div>
+    </div>
+
+    <p id="status" class="status">正在检查当前页面…</p>
+
+    <section id="langBox" class="langbox" hidden>
+      <span class="label">PoE 2 语言</span>
+      <div class="seg" role="group" aria-label="PoE 2 语言">
+        <button type="button" data-lang="cn" class="segbtn">简体</button>
+        <button type="button" data-lang="tw" class="segbtn">繁體</button>
+      </div>
+    </section>
+
+    <p id="langNote" class="langnote" hidden>PoE 1 固定使用繁體（台湾 / 流亡編年史用词）</p>
+
+    <ul class="features">
+      <li>筛选器、词缀与物品名称</li>
+      <li>搜索结果词缀自动汉化</li>
+      <li>数据随扩展本地加载，无需联网</li>
+    </ul>
+
+    <button id="reload" type="button">重新加载市集页面</button>
+    <p class="hint">切换语言会自动刷新市集页面；首次安装或更新后同样需要刷新。</p>
+    <p class="version">v<span id="version">1.1.0</span> · 数据来自官方市集 API 与流放编年史</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

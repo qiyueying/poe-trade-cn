@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "流放之路市集汉化",
+  "short_name": "PoE 市集汉化",
+  "version": "1.1.0",
+  "description": "汉化《流放之路》1/2 官方市集：PoE1 繁體，PoE2 简/繁可切换。",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.pathofexile.com/*"
+  ],
+  "action": {
+    "default_title": "流放之路市集汉化",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.pathofexile.com/trade/*",
+        "https://www.pathofexile.com/trade2/*"
+      ],
+      "js": [
+        "content/lang.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.pathofexile.com/trade/*"
+      ],
+      "js": [
+        "data/ui.tw.js",
+        "data/poe1.js",
+        "content/core.js",
+        "content/main.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.pathofexile.com/trade2/*"
+      ],
+      "js": [
+        "data/ui.js",
+        "data/ui.tw.js",
+        "data/poe2.js",
+        "data/poe2.tw.js",
+        "content/core.js",
+        "content/main.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,27 @@
+# 抓取缓存与中间产物：可逐字节重生成，不入库
+build/raw/
+build/out/
+tools/downloads/
+
+# 构建产物与压缩包：发布走 GitHub Release 附件
+dist/
+*.zip
+
+# 浏览器 e2e 用户目录（每个 60-650 MB，本地跑一次就有）
+build/edge-ext-profile*/
+build/cdp-test-*/
+build/ninja-*/
+build/*.png
+
+# 第三方参考扩展：只保留 make_ui_dict.js 需要的那张字符串表
+ref/poe-trade-zh/*
+!ref/poe-trade-zh/js/
+ref/poe-trade-zh/js/*
+!ref/poe-trade-zh/js/translate.zh_TW.js
+
+# 杂项
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store
