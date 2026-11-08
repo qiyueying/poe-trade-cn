@@ -26,8 +26,13 @@ function Resolve-Python {
   if ($c) { $cands += ,@($c.Source) }
   $c = Get-Command py -ErrorAction SilentlyContinue
   if ($c) { $cands += ,@($c.Source, '-3') }
-  $fb = Join-Path $env:USERPROFILE '.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe'
-  if (Test-Path $fb) { $cands += ,@($fb) }
+  if ($env:DSH_PYTHON -and (Test-Path $env:DSH_PYTHON)) { $cands += ,@($env:DSH_PYTHON) }
+  foreach ($root in @("$env:LOCALAPPDATA\Programs\Python\Python*", "$env:ProgramFiles\Python*")) {
+    foreach ($d in (Get-ChildItem $root -ErrorAction SilentlyContinue | Sort-Object Name -Descending)) {
+      $p = Join-Path $d.FullName 'python.exe'
+      if (Test-Path $p) { $cands += ,@($p) }
+    }
+  }
   foreach ($cand in $cands) {
     $exe = $cand[0]
     $pre = @($cand | Select-Object -Skip 1)
@@ -40,7 +45,7 @@ function Resolve-Python {
     Write-Host "python: $exe $($pre -join ' ')"
     return
   }
-  throw 'python 未找到：装 Python 3（Windows 商店的 python 别名不可用），或把自带运行时路径填进 Resolve-Python。'
+  throw 'python 未找到：装 Python 3 并加入 PATH，或设置环境变量 DSH_PYTHON 指向解释器（Windows 商店的 python 别名不可用）。'
 }
 
 Resolve-Python

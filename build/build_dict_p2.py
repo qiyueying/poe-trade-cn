@@ -8,7 +8,7 @@ overridden/extended with:
 """
 import json, os, re, collections
 
-base = r'C:\Users\1\Documents\deepseek-harness\default-workspace'
+base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 B = os.path.join(base, 'build')
 os.makedirs(os.path.join(B, 'out'), exist_ok=True)
 

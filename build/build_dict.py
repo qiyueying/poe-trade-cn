@@ -1,7 +1,7 @@
 """Merge translation sources into build/out/merged_src.json (key -> zh source value)."""
 import json, os, re, collections
 
-base = r'C:\Users\1\Documents\deepseek-harness\default-workspace'
+base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 B = os.path.join(base, 'build')
 D = os.path.join(base, 'tools', 'downloads')
 os.makedirs(os.path.join(B, 'out'), exist_ok=True)
@@ -72,7 +72,11 @@ for path in tsvs:
     print('loaded', name, len(rows))
 
 for n, prio in [('i18n1', 1), ('i18n2', 2), ('i18n3', 3)]:
-    d = json.load(open(os.path.join(base, 'tools', 'maps', n + '.json'), encoding='utf-8'))
+    p = os.path.join(base, 'tools', 'maps', n + '.json')
+    if not os.path.exists(p):
+        print('skip missing', n)
+        continue
+    d = json.load(open(p, encoding='utf-8'))
     for k, v in d.items():
         add(k, v, prio)
     print('loaded', n, len(d))

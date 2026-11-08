@@ -16,7 +16,7 @@
 | 浏览器端到端（自动起 headless Edge） | `node build/edge_e2e.js`、`node build/edge_e2e_poe2.js` |
 | 把开发目录导出成发布仓库 | `powershell -ExecutionPolicy Bypass -File build/export_repo.ps1` |
 
-解释器：脚本会依次试 `python`、`py -3`、DSH 自带运行时（`%USERPROFILE%\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe`），
+解释器：脚本会依次试 `python`、`py -3`、环境变量 `DSH_PYTHON` 指向的解释器（或在命令行里把 Python 加进 PATH），
 并检查 Pillow（`build_extension.py` 用 PIL 画图标）。Windows 商店的 `python.exe` 别名返回 9009，会被跳过。
 
 ## 1. 两个目录：开发工作区 vs 发布仓库
