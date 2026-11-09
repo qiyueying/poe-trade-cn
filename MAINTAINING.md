@@ -13,6 +13,9 @@
 | 只重新打包 | `python build/build_extension.py` |
 | 数据一致性自检 | `node build/check_data.js` |
 | 翻译 / 语言切换单测 | `node build/test_core.js`、`node build/test_lang.js` |
+| 侧栏汇率算法单测 | `node build/test_rates.js` |
+| 数值高亮切词单测 | `node build/test_highlight.js` |
+| manifest 结构与资源自检 | `node build/check_manifest.js` |
 | 浏览器端到端（自动起 headless Edge） | `node build/edge_e2e.js`、`node build/edge_e2e_poe2.js` |
 | 把开发目录导出成发布仓库 | `powershell -ExecutionPolicy Bypass -File build/export_repo.ps1` |
 
@@ -27,7 +30,7 @@
 
 | 入库 | 体积 | 说明 |
 | --- | --- | --- |
-| `src/` | 约 40 KB | 扩展源码、manifest、README 模板 |
+| `src/` | 约 60 KB | 扩展源码（含 `src/panel/` 侧栏助手）、manifest、README 模板 |
 | `extension/data/` | 2.0 MB | FilterBlade 汉化词典（CN / TW 各两套） |
 | `build/*.py` `build/*.js` `build/update.ps1` `build/export_repo.ps1` | 小 | 抓取、生成、构建、自检、e2e、导出 |
 | `tools/openccjs/` | 2.1 MB | OpenCC 的 js 版（Apache-2.0） |
@@ -100,9 +103,12 @@ powershell -ExecutionPolicy Bypass -File build/update.ps1
 | 4 | `node build/make_ui_dict.js`、`node build/convert_ui.js` | 仅 UI 文案变更时需要；产出 `build/out/ui_cn.json`、`ui_tw.json` |
 | 5 | `python build/build_extension.py` | `built ... data <时间戳>`、`zip ... 1.1–1.3 MB` |
 | 6 | `node build/check_data.js` | `OK: payload identity, script purity, locale wording, UI maps and filters hold` |
+| 6b | `node build/check_manifest.js` | `manifest checks passed`（脚本路径、WAR 资源与匹配式、图标、popup 都存在） |
 | 7 | `node build/test_core.js` | `all core checks passed`（20 例，含 `poe2/cn ... items=4xxx` 这行） |
 | 8 | `node build/test_lang.js` | 8 例通过 |
-| 9 | `node build/edge_e2e.js`、`node build/edge_e2e_poe2.js` | 需要先有 9444 端口的 headless Edge；`update.ps1` 会自动起，手工跑则按 §7 起一个 |
+| 8c | `node build/test_highlight.js` | 12 例通过（含价格行不误伤、英文粘连数字跳过） |
+| 8b | `node build/test_rates.js` | `rates checks passed`（poe1 D/C=624.3、poe2 D/C≈1.798 等 13 例） |
+| 9 | `node build/edge_e2e.js`、`node build/edge_e2e_poe2.js` | 需要先有 9444 端口的 headless Edge；`update.ps1` 会自动起，手工跑则按 §7 起一个。poe2 脚本现在还断言侧栏宿主、折叠开关与 iframe 里的面板文字 |
 
 最后在真实浏览器里手测一次（用当季真实联赛名）。headless 假页面证明的是改写链路，不是真实站点结构。
 
@@ -184,6 +190,12 @@ powershell -ExecutionPolicy Bypass -File build/update.ps1
 - 某条仍是英文：在该语言 `build/raw/<game>/<lang>/stats.json` 里搜它的 `id`，没有就是上游缺条目。
 - 切换后没变化：看 `<html data-poe-cn-lang>` 是否等于目标语言；不等说明 `lang.js` 没跑或 storage 被禁用，刷新一次。
 - 页面一直 pending：多半是数据脚本没加载成功（manifest 路径错 / `dist/data` 缺文件），不是网络问题。
+- e2e 里页面保持英文、`marker=null`：Edge 157 品牌版会**静默忽略** `--load-extension`（日志里连 unpacked 装载记录都没有）。改用 CDP：`node build/load_extension.js dist/poe-trade-cn`（`Extensions.loadUnpacked`），`update.ps1` 已经在启动浏览器后自动调用，装不上直接失败。
+- 装不上、扩展列表里没有它：先看 `--enable-logging=stderr` 里的 `Extension error:`。最常踩的是 `Invalid value for 'web_accessible_resources[0]'. Invalid match pattern.` —— **WAR 的 matches 路径只能是 `/*`**，写 `https://www.pathofexile.com/trade/*` 会让整个扩展加载失败（`check_manifest.js` 现在会拦住）。
+- 侧栏面板空白：面板是 `chrome-extension://<id>/panel/panel.html` 的 iframe，浏览器把它当作独立 target（OOPIF），`Page.getFrameTree` 里看不到，用 `http://127.0.0.1:9444/json/list` 里 `type=iframe` 的 target 检查。
+- 弹窗「Microsoft Edge 无法读取和写入其数据目录: /build/edge-ext-profile-e2e」：
+  这是在 Git Bash / MSYS 里直接起 msedge、把 `--user-data-dir` 写成相对路径，MSYS 把它改写成 POSIX 形式（`/build/...`），Edge 按这个路径建目录必然失败。
+  一律用 `build/update.ps1` 起 e2e（它用 `Join-Path (Get-Location)` 给绝对路径并保证目录存在），或在 bash 里传绝对路径 `--user-data-dir="$PWD/build/edge-ext-profile-e2e"`；弹窗点「确定」后重跑即可，残留进程会被 update.ps1 按命令行清掉。
 - 手工起 e2e 浏览器：
 
 ```powershell

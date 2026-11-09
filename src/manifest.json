@@ -2,14 +2,15 @@
   "manifest_version": 3,
   "name": "流放之路市集汉化",
   "short_name": "PoE 市集汉化",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "汉化《流放之路》1/2 官方市集：PoE1 繁體，PoE2 简/繁可切换。",
   "permissions": [
     "tabs",
     "storage"
   ],
   "host_permissions": [
-    "https://www.pathofexile.com/*"
+    "https://www.pathofexile.com/*",
+    "https://poe.ninja/*"
   ],
   "action": {
     "default_title": "流放之路市集汉化",
@@ -41,6 +42,26 @@
     },
     {
       "matches": [
+        "https://www.pathofexile.com/trade/*",
+        "https://www.pathofexile.com/trade2/*"
+      ],
+      "js": [
+        "content/highlight.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.pathofexile.com/trade/*",
+        "https://www.pathofexile.com/trade2/*"
+      ],
+      "js": [
+        "panel/host.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
         "https://www.pathofexile.com/trade2/*"
       ],
       "js": [
@@ -53,6 +74,19 @@
       ],
       "run_at": "document_start",
       "world": "MAIN"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "panel/panel.html",
+        "panel/panel.css",
+        "panel/panel.js",
+        "panel/rates.js"
+      ],
+      "matches": [
+        "https://www.pathofexile.com/*"
+      ]
     }
   ],
   "icons": {

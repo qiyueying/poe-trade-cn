@@ -1,0 +1,61 @@
+:root {
+  color-scheme: dark;
+  --bg: #0d0b09;
+  --panel: #17130f;
+  --line: #3a2d20;
+  --gold: #c8a45c;
+  --gold-dim: #8e7444;
+  --text: #e7dcc8;
+  --muted: #9b8d78;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% -10%, #221809 0, var(--bg) 60%);
+  color: var(--text);
+  font: 13px/1.55 "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+}
+.head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px; }
+.sigil {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border: 1px solid var(--gold-dim); border-radius: 50%;
+  color: var(--gold); font-size: 16px; font-weight: 700;
+}
+h1 { margin: 0; font-size: 15px; letter-spacing: .08em; font-weight: 600; }
+.sub { margin: 1px 0 0; color: var(--muted); font-size: 11px; }
+.tabs { display: flex; gap: 6px; padding: 0 14px 10px; }
+.tab {
+  flex: 1; padding: 6px 0; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--panel); color: var(--muted); cursor: pointer; font-size: 12px;
+}
+.tab.on { color: var(--gold); border-color: var(--gold-dim); }
+main { padding: 0 14px 16px; }
+.pane { display: none; }
+.pane.on { display: block; }
+.field { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.field span { color: var(--muted); font-size: 12px; }
+.field input {
+  flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--line);
+  border-radius: 5px; background: var(--panel); color: var(--text); font-size: 12px;
+}
+button.primary {
+  width: 100%; padding: 8px 0; border: 1px solid var(--gold-dim); border-radius: 6px;
+  background: linear-gradient(180deg, #241a0f, #17130f); color: var(--gold);
+  cursor: pointer; font-size: 13px;
+}
+button.primary:disabled { opacity: .55; cursor: default; }
+.rates { margin: 12px 0 0; padding: 0; }
+.rates > div {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--panel); margin-bottom: 6px;
+}
+.rates dt { color: var(--muted); font-size: 12px; }
+.rates dd { margin: 0; font-size: 12px; }
+.rates b { color: var(--gold); font-size: 15px; margin-right: 4px; }
+.toggle { cursor: pointer; }
+.toggle input { width: 15px; height: 15px; accent-color: #c9a227; }
+.hint { color: var(--muted); font-size: 11px; line-height: 1.6; margin: 10px 0 0; }
+.hint a { color: var(--gold-dim); }
+.about { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; line-height: 1.9; }

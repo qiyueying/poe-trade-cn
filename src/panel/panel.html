@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>市集助手</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header class="head">
+    <span class="sigil">流</span>
+    <div>
+      <h1>市集助手</h1>
+      <p class="sub" id="realm">PoE 市集</p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab on" data-tab="rates" role="tab">汇率</button>
+    <button type="button" class="tab" data-tab="mods" role="tab">词缀</button>
+    <button type="button" class="tab" data-tab="about" role="tab">关于</button>
+  </nav>
+
+  <main>
+    <section class="pane on" data-pane="rates">
+      <label class="field">
+        <span>赛季</span>
+        <input id="league" type="text" spellcheck="false" placeholder="Standard">
+      </label>
+      <button id="refresh" type="button" class="primary">从 poe.ninja 更新汇率</button>
+      <p id="rateStatus" class="hint">尚未获取市场数据</p>
+      <dl class="rates">
+        <div><dt>神圣石 D</dt><dd><b id="d2c">—</b> 混沌石</dd></div>
+        <div><dt>崇高石 E</dt><dd><b id="e2c">—</b> 混沌石</dd></div>
+        <div><dt>神圣石 D</dt><dd><b id="d2e">—</b> 崇高石</dd></div>
+      </dl>
+      <p class="hint">数据来自 poe.ninja 国际服经济页，仅国际服可用；点击更新后缓存 15 分钟。</p>
+    </section>
+
+    <section class="pane" data-pane="mods">
+      <label class="field toggle">
+        <input type="checkbox" id="hlToggle" checked>
+        <span>搜索结果中的数值高亮</span>
+      </label>
+      <p class="hint">词缀里的掷骰数值会以金色加粗显示，不能修改官方颜色行（已腐化、工艺等除外）。关闭后立即还原原始文本。</p>
+      <p class="hint" id="modsNote">阶级着色（T1-T7）待补：官方 API 不提供阶级区间，需要从游戏词缀表生成规则。</p>
+    </section>
+
+    <section class="pane" data-pane="about">
+      <ul class="about">
+        <li>市集筛选器、词缀与物品名称本地化</li>
+        <li>PoE 1 固定繁體，PoE 2 可在扩展弹窗切换简/繁</li>
+        <li>数据随扩展本地加载，无需联网</li>
+      </ul>
+      <p class="hint">版本 v<span id="version">—</span> · <a href="https://github.com/qiyueying/poe-trade-cn" target="_blank" rel="noreferrer">GitHub</a></p>
+    </section>
+  </main>
+  <script src="rates.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

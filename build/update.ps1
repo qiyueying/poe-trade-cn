@@ -71,10 +71,18 @@ function Start-E2EBrowser {
   ) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
   if (-not $edge) { Write-Warning '未找到 msedge.exe，跳过 e2e'; return $null }
   if (-not (Test-Path 'dist/poe-trade-cn')) { throw 'dist/poe-trade-cn 不存在，先构建再跑 e2e。' }
-  $profile = Join-Path $PWD 'build\edge-ext-profile-e2e'
+  $profile = Join-Path (Get-Location) 'build\edge-ext-profile-e2e'
+  # 目录必须存在且可写，否则 Edge 弹「无法创建数据目录」并直接退出。
+  if (-not (Test-Path $profile)) { New-Item -ItemType Directory -Path $profile -Force | Out-Null }
   $ext = (Resolve-Path 'dist/poe-trade-cn').Path
   # 上一轮遗留的 Edge 会占住 9444 和这个用户目录：新进程附着到旧实例后命令行参数被忽略，
   # 扩展没加载、页面保持英文，而 e2e 只打印证据、当时不会报错。先杀掉监听者再启动。
+  # 命令行里带这个 profile 的残留 Edge 也会锁住目录（哪怕没抢到 9444），先按命令行清掉。
+  try {
+    Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" -ErrorAction Stop |
+      Where-Object { $_.CommandLine -and $_.CommandLine -match 'edge-ext-profile-e2e' } |
+      ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; Write-Host "  killed orphan edge pid $($_.ProcessId)" }
+  } catch { }
   $stale = @()
   try { $stale = Get-NetTCPConnection -LocalPort 9444 -State Listen -ErrorAction Stop } catch { }
   if (-not $stale) {
@@ -125,6 +133,9 @@ if (-not $SkipE2E) {
   try {
     $edgeProc = Start-E2EBrowser
     if ($edgeProc) {
+      # Edge 157 品牌版会静默忽略 --load-extension（页面保持英文、marker=null），
+      # 只能通过 CDP 把 dist 装进去；装不上直接失败，不要往下跑 e2e。
+      Invoke-Node 'build/load_extension.js'
       foreach ($t in @('build/edge_e2e.js', 'build/edge_e2e_poe2.js')) {
         try { Invoke-Node $t }
         catch {

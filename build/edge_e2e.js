@@ -166,7 +166,7 @@ const filters = {
   await send('Runtime.enable');
   await send('Fetch.enable', { patterns: [{ urlPattern: '*', requestStage: 'Request' }] });
   await send('Page.navigate', { url });
-  await new Promise((r) => setTimeout(r, 4000));
+  await new Promise((r) => setTimeout(r, 6000));
 
   const result = await send('Runtime.evaluate', {
     expression: `JSON.stringify({
