@@ -196,6 +196,7 @@ powershell -ExecutionPolicy Bypass -File build/update.ps1
 - 弹窗「Microsoft Edge 无法读取和写入其数据目录: /build/edge-ext-profile-e2e」：
   这是在 Git Bash / MSYS 里直接起 msedge、把 `--user-data-dir` 写成相对路径，MSYS 把它改写成 POSIX 形式（`/build/...`），Edge 按这个路径建目录必然失败。
   一律用 `build/update.ps1` 起 e2e（它用 `Join-Path (Get-Location)` 给绝对路径并保证目录存在），或在 bash 里传绝对路径 `--user-data-dir="$PWD/build/edge-ext-profile-e2e"`；弹窗点「确定」后重跑即可，残留进程会被 update.ps1 按命令行清掉。
+- 发 Release 时 `curl https://api.github.com/...` 返回 `301 -> https://github.com/<path>`：`api.github.com` 被本机 DNS/VPN 劫持到 github.com 边缘，不是 token 问题。用 `--resolve api.github.com:443:140.82.121.6`（上传附件同理：`--resolve uploads.github.com:443:20.205.243.161`）即可，验证：`curl --resolve api.github.com:443:140.82.121.6 https://api.github.com/rate_limit` 应返回 200。
 - 手工起 e2e 浏览器：
 
 ```powershell
